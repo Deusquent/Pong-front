@@ -2,6 +2,8 @@ name: Frontend CI → Infra Deploy
 
 on:
   push:
+    branches:
+      - develop
   pull_request:
 
 jobs:

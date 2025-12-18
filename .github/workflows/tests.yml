@@ -1,0 +1,26 @@
+name: Frontend CI
+on:
+  push:
+    branches: [ develop ]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - name: Show secret value
+        env:
+          DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
+        run: echo "DEMO_SECRET is $DEMO_SECRET"
+      - run: npm ci
+      - run: mkdir -p reports
+      - run: npm test -- --run --reporter=json --outputFile=reports/test-results.json
+      - name: Archive tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-test-report
+          path: reports/test-results.json
